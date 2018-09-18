@@ -47,13 +47,13 @@ export default {
   },
   methods: {
     freePosition: function() {
-      let freeArray = [];
+      let freeArray = []
       for(let i = 0; i < this.gridSize; i++) {
         for(let j = 0; j < this.gridSize; j++) {
           if(this.matrix[i].array[j] === 1) freeArray.push({i: i, j: j})
         }
       }
-      let randomElem = freeArray[Math.floor(Math.random()*freeArray.length)];
+      let randomElem = freeArray[Math.floor(Math.random()*freeArray.length)]
       return freeArray.length !== 0 ? {i: randomElem.i, j: randomElem.j} : {}
     },
     setNew: function () {
