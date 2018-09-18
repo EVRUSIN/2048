@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <GlobalEvents @keyup="keyMonitor"/>
+
     <Table/>
   </div>
 </template>
@@ -18,15 +18,17 @@ export default {
   },
   data: function () {
     return {
-      sum: 0
+
     }
   },
   methods: {
-    keyMonitor: function(event) {
-      // if(event === Arrow)
-
-      // alert(event.key)
-    }
+    // keyMonitor: function(event) {
+    //   if(event.key === 'ArrowLeft') {
+    //     Table.methods.moveLeft()
+    //   }
+    //
+    //    // alert(event.key)
+    // }
   }
 }
 </script>
