@@ -53,11 +53,11 @@ export default {
       this.freeCells = freeArray.length
       return freeArray.length !== 0 ? {i: randomElem.i, j: randomElem.j} : {}
     },
+
     addTile: function () {
       let position = this.freePosition()
       let value = Math.random() < 0.9 ? 2 : 4;
       this.$set(this.matrix[position.i].array, position.j, value)
-      console.log(this.freeCells)
       if(this.freeCells === 1) {
         return this.isGameOver()
       }
@@ -74,7 +74,6 @@ export default {
         for(let j = 0; j < this.gridSize; j++) {
           row.push(this.matrix[i].array[j]);
         }
-
         if(this.checkMovable(row)) {
           able = true
           if(real) {
