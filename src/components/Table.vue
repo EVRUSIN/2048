@@ -23,7 +23,6 @@ export default {
   name: "Table",
   data: function() {
     return {
-
       gridSize: 4,
       matrix : [
         {array: [1, 1, 1, 1]},
@@ -32,18 +31,15 @@ export default {
         {array: [1, 1, 1, 1]}
       ],
       maxValue: 2,
-      wonValue: 8,
+      wonValue: 2048,
       startCells: 2,
-      gameOver: false
-
+      freeCells: Number
     }
   },
   beforeMount: function () {
     for(let i = 0; i < this.startCells; i++) {
-      this.setNew()
+      this.addTile()
     }
-
-
   },
   methods: {
     freePosition: function() {
@@ -54,23 +50,24 @@ export default {
         }
       }
       let randomElem = freeArray[Math.floor(Math.random()*freeArray.length)]
+      this.freeCells = freeArray.length
       return freeArray.length !== 0 ? {i: randomElem.i, j: randomElem.j} : {}
     },
-    setNew: function () {
+    addTile: function () {
       let position = this.freePosition()
       let value = Math.random() < 0.9 ? 2 : 4;
       this.$set(this.matrix[position.i].array, position.j, value)
-      console.log('maxVal = ' + this.maxValue)
-      if(Object.keys(position).length === 1) {
+      console.log(this.freeCells)
+      if(this.freeCells === 1) {
         return this.isGameOver()
       }
     },
 
     isGameOver: function () {
-      if(!this.moveLeft() && !this.moveUp() && !this.moveRight() && !this.moveDown()) alert('Game over!')
+      if(!this.moveLeft(false) && !this.moveUp(false) && !this.moveRight(false) && !this.moveDown(false)) alert('Game over!')
     },
 
-    moveLeft: function() {
+    moveLeft: function(real) {
       let able = false
       for(let i = 0; i < this.gridSize; i++) {
         let row = []
@@ -80,18 +77,19 @@ export default {
 
         if(this.checkMovable(row)) {
           able = true
-          row = this.move(row)
-          row = this.mergeCells(row)
-          row = this.move(row)
-          this.$set(this.matrix, i, {array : row})
+          if(real) {
+            row = this.move(row)
+            row = this.mergeCells(row)
+            row = this.move(row)
+            this.$set(this.matrix, i, {array : row})
+          }
         }
       }
-      if(able) this.setNew()
-      console.log(able)
+      if(able && real) this.addTile()
       return able
     },
 
-    moveRight: function() {
+    moveRight: function(real) {
       let able = false
       for(let i = 0; i < this.gridSize; i++) {
         let row = []
@@ -100,17 +98,19 @@ export default {
         }
         if(this.checkMovable(row)) {
           able = true
-          row = this.move(row)
-          row = this.mergeCells(row)
-          row = this.move(row)
-          this.$set(this.matrix, i, {array : row.reverse()})
+          if(real) {
+            row = this.move(row)
+            row = this.mergeCells(row)
+            row = this.move(row)
+            this.$set(this.matrix, i, {array : row.reverse()})
+          }
         }
       }
-      if(able) this.setNew()
+      if(able && real) this.addTile()
       return able
     },
 
-    moveUp: function() {
+    moveUp: function(real) {
       let able = false
       for(let j = 0; j < this.gridSize; j++) {
         let row = []
@@ -119,19 +119,21 @@ export default {
         }
         if(this.checkMovable(row)) {
           able = true
-          row = this.move(row)
-          row = this.mergeCells(row)
-          row = this.move(row)
-          for(let i = 0; i < this.gridSize; i++) {
-            this.$set(this.matrix[i].array, j, row[i])
+          if(real) {
+            row = this.move(row)
+            row = this.mergeCells(row)
+            row = this.move(row)
+            for(let i = 0; i < this.gridSize; i++) {
+              this.$set(this.matrix[i].array, j, row[i])
+            }
           }
         }
       }
-      if(able) this.setNew()
+      if(able && real) this.addTile()
       return able
     },
 
-    moveDown: function() {
+    moveDown: function(real) {
       let able = false
       for(let j = 0; j < this.gridSize; j++) {
         let row = []
@@ -140,15 +142,17 @@ export default {
         }
         if(this.checkMovable(row)) {
           able = true
-          row = this.move(row)
-          row = this.mergeCells(row)
-          row = this.move(row)
-          for(let i = this.gridSize - 1; i >= 0; i--) {
-            this.$set(this.matrix[i].array, j, row[this.gridSize - i - 1])
+          if(real) {
+            row = this.move(row)
+            row = this.mergeCells(row)
+            row = this.move(row)
+            for(let i = this.gridSize - 1; i >= 0; i--) {
+              this.$set(this.matrix[i].array, j, row[this.gridSize - i - 1])
+            }
           }
         }
       }
-      if(able) this.setNew()
+      if(able && real) this.addTile()
       return able
     },
 
@@ -183,15 +187,11 @@ export default {
       return modifiedRow
     },
     keyMonitor: function(event) {
-      if(event.key === 'ArrowLeft') this.moveLeft()
-      if(event.key === 'ArrowRight') this.moveRight()
-      if(event.key === 'ArrowUp') this.moveUp()
-      if(event.key === 'ArrowDown') this.moveDown()
+      if(event.key === 'ArrowLeft') this.moveLeft(true)
+      if(event.key === 'ArrowRight') this.moveRight(true)
+      if(event.key === 'ArrowUp') this.moveUp(true)
+      if(event.key === 'ArrowDown') this.moveDown(true)
     }
-
-
-
-
   }
 }
 </script>
